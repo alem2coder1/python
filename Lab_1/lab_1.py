@@ -1,5 +1,7 @@
 
 # this is a comment
+name = input("请输入你的名字: ")
+print(name)
 print("hello world")
 x = str(10)
 y=int(10)
