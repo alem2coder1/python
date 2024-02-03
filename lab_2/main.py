@@ -279,3 +279,18 @@ fruits = ["apple", "banana", "cherry"]
 for x in adj:
   for y in fruits:
     print(x, y)
+
+# i = 2
+# while i < 10:
+#   if i == 5:
+#     break
+#   i += 1
+#   print(i)
+    
+x = 6
+c = 4
+w = 5
+if w >= c | w <= x:
+  print(w)
+else:
+  print(c) 
