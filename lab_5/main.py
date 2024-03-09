@@ -1,16 +1,6 @@
 import os
 import re
 
-# text = "+77474531627 is a phone number, and +12345678901 is another."
-
-# pattern = r'\+(7|8)\d{10}'
-
-# phone_numbers = re.findall(pattern, text)
-# print(phone_numbers)
-
-
-
-
 desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 file_name = "row.txt"
 file_path = os.path.join(desktop_path, file_name)
@@ -27,9 +17,9 @@ with open(file_path, "r", encoding="utf-8") as file:
 # find_max = r'\b[А-Я][а-я]+\b'
 # 5
 # find_mid = r'^а.*б$'
-# Includes = re.findall(find_a, content)
-    # for Include in Includes:
-    # print(Include)
+# Includes = re.findall(find_min, content)
+# for Include in Includes:
+#     print(Include)
 # 6
 # def replace_colon(text):
 #     modified_tx = text.replace(' ', ':').replace(',', ':').replace('.', ':')
