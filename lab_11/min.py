@@ -24,18 +24,29 @@ db_config = {
     'port': 3306,
 }
 
+def is_alpha_string(s):
+    return s.isalpha()
+
+def is_valid_age(age):
+    return age.isdigit()
+
 def add_content():
     name = input("атын жазыңыз: ")
-    age = int(input("Жасын жазыңыз: "))
-    connection = mysql.connector.connect(**db_config)
-    cursor = connection.cursor()
-    query = "INSERT INTO person (name, age) VALUES (%s, %s);"
-    cursor.execute(query, (name, age))
-    connection.commit()
-    print("Сәтті сақталды!")
-    cursor.close()
-    connection.close()
-
+    if is_alpha_string(name):
+        age = input("Жасын жазыңыз: ")
+        if is_valid_age(age):
+            connection = mysql.connector.connect(**db_config)
+            cursor = connection.cursor()
+            query = "INSERT INTO person (name, age) VALUES (%s, %s);"
+            cursor.execute(query, (name, age))
+            connection.commit()
+            print("Сәтті сақталды!")
+            cursor.close()
+            connection.close()
+        else:
+            print("Дұрыс емес!")
+    else:
+        print("Дұрыс емес!")
 def delete_content():
     id_to_delete = int(input("Enter ID to delete: "))
     connection = mysql.connector.connect(**db_config)
