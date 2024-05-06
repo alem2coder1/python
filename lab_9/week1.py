@@ -3,13 +3,23 @@ import sys
 import random
 import time
 from pygame.locals import *
+import mysql.connector
 
 # 定义颜色变量
 black_colour = pygame.Color(28, 56, 20)
 white_colour = pygame.Color(255, 144, 20)
 red_colour = pygame.Color(255, 34, 20)
 grey_colour = pygame.Color(150, 150, 150)
+db_config = {
+    'host': 'localhost',
+    'user': 'my_booksite_bda',
+    'password': '12344321',
+    'database': 'my_booksite',
+    'port': 3306,
+}
 
+# 初始化pygame
+pygame.init()
 
 # 定义游戏结束函数
 def gameover(gamesurface):
@@ -31,13 +41,46 @@ def gameover(gamesurface):
     # 退出程序
     sys.exit()
 
+# 定义用户登录函数
+def user_login():
+    print("Welcome to Snake Game!")
+    name = input("Please enter your username: ")
+    password = input("Please enter your password: ")
+    # 连接到数据库
+    connection = mysql.connector.connect(**db_config)
+    cursor = connection.cursor()
+    # 执行查询语句
+    query = "SELECT level, speed FROM userpy WHERE name = %s AND password = %s"
+    cursor.execute(query, (name, password))
+    user_info = cursor.fetchone()
+    # 关闭数据库连接
+    cursor.close()
+    connection.close()
+    if user_info:
+        print(f"Welcome back, {name}!")
+        print(f"Your current level is {user_info[0]} and speed is {user_info[1]}.")
+        return user_info[0], user_info[1]
+    else:
+        print("User not found. Please register first.")
+        sys.exit()
+
+# 定义保存用户信息函数
+def save_user_info(level, speed):
+    # 连接到数据库
+    connection = mysql.connector.connect(**db_config)
+    cursor = connection.cursor()
+    # 执行更新语句
+    query = "UPDATE userpy SET level = %s, speed = %s WHERE name = 'alem'"
+    cursor.execute(query, (level, speed))
+    connection.commit()
+    # 关闭数据库连接
+    cursor.close()
+    connection.close()
 
 # 定义主函数
-def main():
-    # 初始化pygame，为使用硬件做准备
-    pygame.init()
-    pygame.time.Clock()
-    ftpsClock = pygame.time.Clock()
+def main(ftpsClock=None):
+    # 获取用户信息
+    level, speed = user_login()
     # 创建一个窗口
     gamesurface = pygame.display.set_mode((640, 480))
     # 设置窗口的标题
@@ -56,8 +99,6 @@ def main():
     change_derection = derection
     # 初始化吃掉的目标方块数量
     eaten_count = 0
-    # 游戏速度
-    speed = 2
     # 食物持续时间
     food_duration = 5  # 持续5秒
     # 食物生成时间间隔
@@ -112,8 +153,12 @@ def main():
         if snakeposition[0] == square_purpose[0] and snakeposition[1] == square_purpose[1]:
             square_position = 0
             eaten_count += 1
+            # 每吃掉一个食物，蛇长度增加一个单位
+            snakelength.append(list(snakelength[-1]))  # 将蛇尾的位置加入到蛇身列表中，使其长度增加一个单位
             if eaten_count % 3 == 0:  # 每吃掉三个方块，速度加快一秒
                 speed += 1
+                level += 1
+                save_user_info(level, speed)
         else:
             snakelength.pop()
 
@@ -152,4 +197,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    clock = pygame.time.Clock()
+    main(clock)

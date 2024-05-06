@@ -27,18 +27,18 @@ db_config = {
 def is_alpha_string(s):
     return s.isalpha()
 
-def is_valid_age(age):
-    return age.isdigit()
+def is_valid_age(phone):
+    return phone.isdigit()
 
 def add_content():
     name = input("атын жазыңыз: ")
     if is_alpha_string(name):
-        age = input("Жасын жазыңыз: ")
-        if is_valid_age(age):
+        phone = input("Жасын жазыңыз: ")
+        if is_valid_age(phone):
             connection = mysql.connector.connect(**db_config)
             cursor = connection.cursor()
-            query = "INSERT INTO person (name, age) VALUES (%s, %s);"
-            cursor.execute(query, (name, age))
+            query = "INSERT INTO person (name, phone) VALUES (%s, %s);"
+            cursor.execute(query, (name, phone))
             connection.commit()
             print("Сәтті сақталды!")
             cursor.close()
@@ -48,10 +48,10 @@ def add_content():
     else:
         print("Дұрыс емес!")
 def delete_content():
-    id_to_delete = int(input("Enter ID to delete: "))
+    id_to_delete = int(input("Enter name to delete: "))
     connection = mysql.connector.connect(**db_config)
     cursor = connection.cursor()
-    query = "DELETE FROM person WHERE ID = %s;"
+    query = "DELETE FROM phonebook WHERE name = %s;"
     cursor.execute(query, (id_to_delete,))
     connection.commit()
     print("Сәтті жойылды!")
@@ -62,7 +62,7 @@ connection = mysql.connector.connect(**db_config)
 cursor = connection.cursor()
 
 #
-query = "SELECT * FROM person ORDER BY ID;"
+query = "SELECT * FROM phonebook ORDER BY name;"
 cursor.execute(query)
 result = cursor.fetchall()
 
@@ -84,7 +84,7 @@ while running:
     font = pygame.font.Font(None, 24)
     y = 40
     for row in result:
-        text = f"ID: {row[0]}, Name: {row[1]}, Age: {row[2]}"
+        text = f"ID:Name: {row[1]}, name: {row[2]}"
         text_surface = font.render(text, True, BLACK)
         screen.blit(text_surface, (screen_width // 2 - text_surface.get_width() // 2, y))
         y += 20
